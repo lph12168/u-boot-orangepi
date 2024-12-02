@@ -13,6 +13,8 @@
 #include <console.h>
 #include <version.h>
 
+#include <linux/compat.h>
+
 DECLARE_GLOBAL_DATA_PTR;
 
 /*
@@ -45,6 +47,7 @@ void main_loop(void)
 {
 	const char *s;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	bootstage_mark_name(BOOTSTAGE_ID_MAIN_LOOP, "main_loop");
 
 #ifdef CONFIG_VERSION_VARIABLE

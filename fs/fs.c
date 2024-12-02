@@ -18,6 +18,10 @@
 #include <div64.h>
 #include <linux/math64.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 DECLARE_GLOBAL_DATA_PTR;
 
 static struct blk_desc *fs_dev_desc;
@@ -563,6 +567,8 @@ int do_load(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
 	if (ret < 0)
 		return 1;
 
+	printf("[latte][%s][%-4d] filename = %s, addr = 0x%08lx, pos = %lld, bytes = %llu\n",
+	       __func__, current->pid, filename, addr, pos, bytes);
 	printf("%llu bytes read in %lu ms", len_read, time);
 	if (time > 0) {
 		puts(" (");
@@ -689,4 +695,3 @@ int do_fs_type(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	return CMD_RET_SUCCESS;
 }
-

@@ -14,6 +14,10 @@
 #include <linux/kernel.h>
 #include <linux/sizes.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 DECLARE_GLOBAL_DATA_PTR;
 
 /* See Documentation/arm64/booting.txt in the Linux kernel */
@@ -38,6 +42,7 @@ static int booti_setup(bootm_headers_t *images)
 	uint64_t dst;
 	uint64_t image_size, text_offset;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	ih = (struct Image_header *)map_sysmem(images->ep, 0);
 
 	if (ih->magic != le32_to_cpu(LINUX_ARM64_IMAGE_MAGIC)) {
@@ -96,6 +101,7 @@ static int booti_start(cmd_tbl_t *cmdtp, int flag, int argc,
 	int ret;
 	struct Image_header *ih;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	ret = do_bootm_states(cmdtp, flag, argc, argv, BOOTM_STATE_START,
 			      images, 1);
 
@@ -134,6 +140,7 @@ int do_booti(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	int ret;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* Consume 'booti' */
 	argc--; argv++;
 
@@ -148,6 +155,8 @@ int do_booti(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	images.os.os = IH_OS_LINUX;
 	images.os.arch = IH_ARCH_ARM64;
+	printf("[latte][%s][%-4d] images.os.os = IH_OS_LINUX, images.os.arch = IH_ARCH_ARM64\n",
+	       __func__, current->pid);
 	ret = do_bootm_states(cmdtp, flag, argc, argv,
 #ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH
 			      BOOTM_STATE_RAMDISK |

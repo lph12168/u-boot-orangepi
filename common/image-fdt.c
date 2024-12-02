@@ -19,6 +19,10 @@
 #include <asm/io.h>
 #include <sysmem.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 #ifndef CONFIG_SYS_FDT_PAD
 #define CONFIG_SYS_FDT_PAD 0x3000
 #endif
@@ -98,6 +102,7 @@ void boot_fdt_add_mem_rsv_regions(struct lmb *lmb, void *fdt_blob)
 	static int rsv_done;
 	const void *prop;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (fdt_check_header(fdt_blob) != 0 || rsv_done)
 		return;
 
@@ -226,6 +231,7 @@ int boot_relocate_fdt(struct lmb *lmb, char **of_flat_tree, ulong *of_size)
 	int	err;
 	int	disable_relocation = 0;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* nothing to do */
 	if (*of_size == 0)
 		return 0;
@@ -354,6 +360,7 @@ int boot_get_fdt(int flag, int argc, char * const argv[], uint8_t arch,
 	const char *select = NULL;
 	int		ok_no_fdt = 0;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	*of_flat_tree = NULL;
 	*of_size = 0;
 

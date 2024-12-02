@@ -22,6 +22,9 @@
 #if defined(CONFIG_CMD_USB)
 #include <usb.h>
 #endif
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
 #else
 #include "mkimage.h"
 #endif
@@ -92,6 +95,7 @@ static inline void boot_start_lmb(bootm_headers_t *images) { }
 static int bootm_start(cmd_tbl_t *cmdtp, int flag, int argc,
 		       char * const argv[])
 {
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	memset((void *)&images, 0, sizeof(images));
 	images.verify = env_get_yesno("verify");
 
@@ -110,6 +114,7 @@ static int bootm_find_os(cmd_tbl_t *cmdtp, int flag, int argc,
 	bool ep_found = false;
 	int ret;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* get kernel image header, start address and length */
 	os_hdr = boot_get_kernel(cmdtp, flag, argc, argv,
 			&images, &images.os.image_start, &images.os.image_len);
@@ -249,6 +254,7 @@ int bootm_find_images(int flag, int argc, char * const argv[])
 {
 	int ret;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* find ramdisk */
 	ret = boot_get_ramdisk(argc, argv, &images, IH_INITRD_ARCH,
 			       &images.rd_start, &images.rd_end);
@@ -297,6 +303,7 @@ int bootm_find_images(int flag, int argc, char * const argv[])
 static int bootm_find_other(cmd_tbl_t *cmdtp, int flag, int argc,
 			    char * const argv[])
 {
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (((images.os.type == IH_TYPE_KERNEL) ||
 	     (images.os.type == IH_TYPE_KERNEL_NOLOAD) ||
 	     (images.os.type == IH_TYPE_MULTI)) &&
@@ -511,6 +518,7 @@ static int bootm_load_os(bootm_headers_t *images, unsigned long *load_end,
 	void *load_buf, *image_buf;
 	int err;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	load_buf = map_sysmem(load, 0);
 	image_buf = map_sysmem(os.image_start, image_len);
 	err = bootm_decomp_image(os.comp, load, os.image_start, os.type,
@@ -701,6 +709,7 @@ int do_bootm_states(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
 	 * Work through the states and see how far we get. We stop on
 	 * any error.
 	 */
+	printf("[latte][%s][%-4d] states = 0x%x\n", __func__, current->pid, states);
 	if (states & BOOTM_STATE_START)
 		ret = bootm_start(cmdtp, flag, argc, argv);
 
@@ -754,6 +763,9 @@ int do_bootm_states(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[],
 	/* From now on, we need the OS boot function */
 	if (ret)
 		return ret;
+	if (images->os.os == IH_OS_LINUX)
+		printf("[latte][%s][%-4d] index = IH_OS_LINUX, boot_fn = do_bootm_linux\n",
+		       __func__, current->pid);
 	boot_fn = bootm_os_get_boot_func(images->os.os);
 	need_boot_fn = states & (BOOTM_STATE_OS_CMDLINE |
 			BOOTM_STATE_OS_BD_T | BOOTM_STATE_OS_PREP |
@@ -899,6 +911,7 @@ static const void *boot_get_kernel(cmd_tbl_t *cmdtp, int flag, int argc,
 	int		os_noffset;
 #endif
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	img_addr = genimg_get_kernel_addr_fit(argc < 1 ? NULL : argv[0],
 					      &fit_uname_config,
 					      &fit_uname_kernel);

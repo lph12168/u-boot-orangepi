@@ -14,7 +14,6 @@
  */
 
 /* #define DEBUG */
-
 #include <common.h>
 #include <command.h>
 #include <image.h>
@@ -22,6 +21,10 @@
 #include <mapmem.h>
 #include <asm/byteorder.h>
 #include <asm/io.h>
+
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
 
 int
 source (ulong addr, const char *fit_uname)
@@ -163,6 +166,7 @@ static int do_source(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	int rcode;
 	const char *fit_uname = NULL;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* Find script image */
 	if (argc < 2) {
 		addr = CONFIG_SYS_LOAD_ADDR;

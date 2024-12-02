@@ -11,6 +11,10 @@
 #include <common.h>
 #include <watchdog.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 #ifdef CONFIG_SHOW_BOOT_PROGRESS
 #include <status_led.h>
 #endif
@@ -967,6 +971,7 @@ int boot_get_ramdisk(int argc, char * const argv[], bootm_headers_t *images,
 	*rd_start = 0;
 	*rd_end = 0;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 #ifdef CONFIG_ANDROID_BOOT_IMAGE
 	/*
 	 * Look for an Android boot image.
@@ -1160,6 +1165,7 @@ int boot_ramdisk_high(struct lmb *lmb, ulong rd_data, ulong rd_len,
 	ulong	initrd_high;
 	int	initrd_copy_to_ram = 1;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	s = env_get("initrd_high");
 	if (s) {
 		/* a value of "no" or a similar string will act like 0,
@@ -1255,6 +1261,7 @@ int boot_get_fpga(int argc, char * const argv[], bootm_headers_t *images,
 	const fpga_desc * const desc = fpga_get_desc(devnum);
 	xilinx_desc *desc_xilinx = desc->devdesc;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* Check to see if the images struct has a FIT configuration */
 	if (!genimg_has_config(images)) {
 		debug("## FIT configuration was not specified\n");
@@ -1365,6 +1372,7 @@ int boot_get_loadable(int argc, char * const argv[], bootm_headers_t *images,
 	const char *uname;
 	uint8_t img_type;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* Check to see if the images struct has a FIT configuration */
 	if (!genimg_has_config(images)) {
 		debug("## FIT configuration was not specified\n");

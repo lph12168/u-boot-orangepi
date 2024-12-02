@@ -64,6 +64,10 @@
 #include <asm/gpio.h>
 #endif
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 DECLARE_GLOBAL_DATA_PTR;
 
 ulong monitor_flash_len;
@@ -1076,6 +1080,7 @@ void board_init_r(gd_t *new_gd, ulong dest_addr)
 	 * TODO(sjg@chromium.org): Consider doing this for all archs, or
 	 * dropping the new_gd parameter.
 	 */
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 #if CONFIG_IS_ENABLED(X86_64)
 	arch_setup_gd(new_gd);
 #endif

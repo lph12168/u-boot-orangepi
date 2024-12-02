@@ -35,6 +35,10 @@
 #include <asm/setup.h>
 #include <asm/arch/rockchip_smccc.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 DECLARE_GLOBAL_DATA_PTR;
 
 static struct tag *params;
@@ -82,6 +86,7 @@ static void announce_and_cleanup(bootm_headers_t *images, int fake)
 {
 	ulong us;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	bootstage_mark_name(BOOTSTAGE_ID_BOOTM_HANDOFF, "start_kernel");
 #ifdef CONFIG_BOOTSTAGE_FDT
 	bootstage_fdt_add_report();
@@ -379,6 +384,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 	int fake = (flag & BOOTM_STATE_OS_FAKE_GO);
 	int es_flag = 0;
 
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 #if defined(CONFIG_AMP)
 	es_flag = arm64_switch_amp_pe(images);
 #elif defined(CONFIG_ARM64_SWITCH_TO_AARCH32)
@@ -470,6 +476,7 @@ static void boot_jump_linux(bootm_headers_t *images, int flag)
 int do_bootm_linux(int flag, int argc, char * const argv[],
 		   bootm_headers_t *images)
 {
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	/* No need for those on ARM */
 	if (flag & BOOTM_STATE_OS_BD_T || flag & BOOTM_STATE_OS_CMDLINE)
 		return -1;

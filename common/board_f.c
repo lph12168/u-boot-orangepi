@@ -43,6 +43,10 @@
 #include <bidram.h>
 #include <sysmem.h>
 
+#include <linux/compat.h>
+#undef _DEBUG
+#define _DEBUG	1
+
 /*
  * Pointer to initial global data area
  *
@@ -974,6 +978,7 @@ static const init_fnc_t init_sequence_f[] = {
 
 void board_init_f(ulong boot_flags)
 {
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	gd->flags = boot_flags;
 	gd->have_console = 0;
 
@@ -1015,6 +1020,7 @@ static const init_fnc_t init_sequence_f_r[] = {
 
 void board_init_f_r(void)
 {
+	printf("[latte][%s][%-4d] +\n", __func__, current->pid);
 	if (initcall_run_list(init_sequence_f_r))
 		hang();
 
